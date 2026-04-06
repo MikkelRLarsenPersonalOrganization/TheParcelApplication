@@ -1,0 +1,9 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "MikkelRLarsen",
+  "identity": "MikkelRLarsen.CleanArchitecture.Template",
+  "name": "Clean Architecture Base Template",
+  "shortName": "clean-temp",
+  "sourceName": "Template",
+  "preferNameDirectory": true
+}
