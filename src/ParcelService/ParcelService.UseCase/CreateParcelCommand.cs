@@ -8,7 +8,7 @@ namespace ParcelService.UseCase
 {
     public class CreateParcelCommand : ICreateParcelCommand
     {
-        public CreateParcelCommandResponse Handle(CreateParcelCommandDto command)
+        public Task<CreateParcelCommandResponse> Handle(CreateParcelCommandDto command)
         {
             throw new NotImplementedException();
         }

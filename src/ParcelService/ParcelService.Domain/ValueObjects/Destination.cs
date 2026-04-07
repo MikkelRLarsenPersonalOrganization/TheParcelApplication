@@ -8,7 +8,7 @@ namespace ParcelService.Domain.ValueObjects
     {
         public string Region { get; init; }
         public string Terminal { get; init; }
-
+        private Destination() { }
         public Destination(string region, string terminal)
         {
             Region = region;

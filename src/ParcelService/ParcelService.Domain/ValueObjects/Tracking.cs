@@ -9,6 +9,7 @@ namespace ParcelService.Domain.ValueObjects
         public Guid TrackingNumber { get; init; }
         public TrackingStatus Status { get; init; }
 
+        private Tracking() { }
         public Tracking(Guid trackingNumber, TrackingStatus status)
         {
             TrackingNumber = trackingNumber;

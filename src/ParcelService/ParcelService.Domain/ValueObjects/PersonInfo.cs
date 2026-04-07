@@ -9,7 +9,7 @@ namespace ParcelService.Domain.ValueObjects
     {
         public string Name { get; init; }
         public Address Address { get; init; }
-
+        private PersonInfo() { }
         public PersonInfo(string name, Address address)
         {
             Name = name;

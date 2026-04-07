@@ -6,4 +6,14 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ParcelService.Facade\ParcelService.Facade.csproj" />
+    <ProjectReference Include="..\ParcelService.Infrastructure\ParcelService.Infrastructure.csproj" />
+    <ProjectReference Include="..\ParcelService.UseCase\ParcelService.UseCase.csproj" />
+  </ItemGroup>
+	
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
 </Project>

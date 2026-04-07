@@ -12,6 +12,7 @@ namespace ParcelService.Domain.ValueObjects
         public string ZipCode { get; init; }
         public string Country { get; init; }
 
+        private Address() { }
         public Address(string street, string houseNumber, string city, string zipCode, string country)
         {
             Street = street;

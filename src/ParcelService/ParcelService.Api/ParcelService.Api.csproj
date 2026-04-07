@@ -8,11 +8,13 @@
 
   <ItemGroup>
     <PackageReference Include="Dapr.AspNetCore" />
+	<PackageReference Include="Microsoft.EntityFrameworkCore.Design" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\Shared.csproj" />
     <ProjectReference Include="..\ParcelService.Facade\ParcelService.Facade.csproj" />
+    <ProjectReference Include="..\ParcelService.InversionOfControl\ParcelService.InversionOfControl.csproj" />
   </ItemGroup>
 	
   <!-- Makes sure that NSwag script automatically runs before building, so we only need to update our OpenApiSpec and build for the update to be implemented

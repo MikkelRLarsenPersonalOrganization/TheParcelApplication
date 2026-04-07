@@ -9,10 +9,17 @@ namespace Aspire.AppHost
         {
             var builder = DistributedApplication.CreateBuilder(args);
 
-            //builder.AddProject<Projects.Template_Api>("template-api");
+            var postgres = builder.AddPostgres("postgres")
+                .WithLifetime(ContainerLifetime.Persistent)
+                .WithPgAdmin();
+
+            var parcelDb = postgres.AddDatabase("parceldb");
+
+            var parcelService = builder.AddProject<Projects.ParcelService_Api>("parcelService")
+                .WithReference(parcelDb)
+                .WaitFor(parcelDb);
 
             builder.Build().Run();
-
         }
     }
 }

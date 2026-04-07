@@ -6,6 +6,6 @@ namespace ParcelService.Domain.Exceptions
 {
     public class DomainException : Exception
     {
-        public DomainException(string) : base() { }
+        public DomainException(string message) : base() { }
     }
 }
