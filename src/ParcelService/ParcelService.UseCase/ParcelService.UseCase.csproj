@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ParcelService.Facade\ParcelService.Facade.csproj" />
+  </ItemGroup>
+
 </Project>
