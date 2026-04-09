@@ -24,14 +24,28 @@ jobs:
         run: dotnet build --no-restore --configuration Release
 
       - name: Run Unit Tests
-        run: dotnet test --no-build --verbosity normal --configuration Release --filter "Category!=Integration"
-
+        run: dotnet test --no-build --verbosity normal --configuration Release --filter "Category!=Integration" --logger "trx;LogFileName=test-results.trx"
+      
+      - name: Publish Test Results
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: Unittest Results
+          path: '**/*.trx'
+          reporter: dotnet-trx
+          
   run_integrationtest:
     # Aspire needs Windows specific SDK and Orchestration. Might get changed to Ubuntu if fix gets found
     runs-on: windows-latest
     needs: run_unittest
 
     steps:
+      - name: Dapr Tool Installer
+        uses: dapr/setup-dapr@v1
+        
+      - name: Setup dapr containers
+        run: dapr init
+    
       - uses: actions/checkout@v6
 
       - name: Setup .NET
@@ -46,4 +60,12 @@ jobs:
         run: dotnet build --no-restore --configuration Release
 
       - name: Run Integration Tests
-        run: dotnet test --no-build --verbosity normal --configuration Release --filter "Category=Integration"
+        run: dotnet test --no-build --verbosity normal --configuration Release --filter "Category=Integration" --logger "trx;LogFileName=test-results.trx"
+      
+      - name: Publish Test Results
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: Integration Results
+          path: '**/*.trx'
+          reporter: dotnet-trx        
