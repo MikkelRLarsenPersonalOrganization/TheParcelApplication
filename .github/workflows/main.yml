@@ -1,0 +1,67 @@
+name: ParcelService Pipeline
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'src/ParcelService/**'
+    paths-ignore:
+      - 'src/ParcelService/Docs/**'
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: parcelservice
+  TAG: ${{ github.sha }}
+  OWNER: mikkelrlarsen
+  
+jobs:
+  Countinous_Integration:
+    permissions: 
+      contents: read
+    uses: ./.github/workflows/ContinousIntegration.yml
+      
+  Countinous_Delivery:
+    needs: Countinous_Integration
+    permissions: 
+      contents: read
+      packages: write
+    uses: ./.github/workflows/ContinousDelivery.yml
+    with:
+      image-name: parcelservice
+      docker-context: src
+      dockerfile: ParcelService/Dockerfile
+
+  Staging:
+    runs-on: self-hosted
+    environment: Staging
+    needs: Countinous_Delivery
+
+    steps:
+      - uses: actions/checkout@v6
+      - uses: azure/setup-kubectl@v4
+      - uses: azure/k8s-set-context@v4
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBECONFIG }}
+          
+      - name: Update deployment image
+        run: |
+          kubectl set image deployment/${{ env.IMAGE_NAME}} ${{ env.IMAGE_NAME}}=${{ env.REGISTRY }}/${{ env.OWNER }}/${{ env.IMAGE_NAME}}:${{ env.TAG}} -n default
+
+  Production:
+    runs-on: ubuntu-latest
+    environment: Production
+    needs: Staging
+
+    steps:
+      - uses: actions/checkout@v6
+      - uses: azure/setup-kubectl@v4
+      - uses: azure/k8s-set-context@v4
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBECONFIG }}
+          
+      - name: Update deployment image
+        run: |
+          kubectl set image deployment/${{ env.IMAGE_NAME}} ${{ env.IMAGE_NAME}}=${{ env.REGISTRY }}/${{ env.OWNER }}/${{ env.IMAGE_NAME}}:${{ env.TAG}} -n default
+    
+    
