@@ -9,6 +9,9 @@ on:
       docker-context:
         required: true
         type: string
+      dockerfile:
+        required: true
+        type: string
 
 env:
   REGISTRY: ghcr.io
@@ -41,5 +44,6 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ${{ inputs.docker-context }}
+          file: ${{ inputs.dockerfile }}
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.OWNER }}/${{ inputs.image-name }}:${{ env.TAG}}
