@@ -27,7 +27,8 @@ jobs:
         run: dotnet test --no-build --verbosity normal --configuration Release --filter "Category!=Integration"
 
   run_integrationtest:
-    runs-on: ubuntu-latest
+    # Aspire needs Windows specific SDK and Orchestration. Might get changed to Ubuntu if fix gets found
+    runs-on: windows-latest
     needs: run_unittest
 
     steps:
