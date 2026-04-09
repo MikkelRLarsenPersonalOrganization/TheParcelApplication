@@ -7,16 +7,20 @@
     <Nullable>enable</Nullable>
     <UserSecretsId>0399e3af-269a-4e32-a546-ad7ec2430e1b</UserSecretsId>
   </PropertyGroup>
+	
+  <ItemGroup Condition="'$(OS)' == 'Windows_NT'">
+	  <!-- Windows bases packages for dev-->
+	  <PackageReference Include="Aspire.Hosting.Orchestration.win-x64" Version="13.2.2" />
+	  <PackageReference Include="Aspire.Dashboard.Sdk.win-x64" Version="13.2.2" />		
+  </ItemGroup>
 
-  <ItemGroup>
-	<!-- Windows bases packages for dev-->
-	<PackageReference Include="Aspire.Hosting.Orchestration.win-x64" Version="13.2.2" />
-	<PackageReference Include="Aspire.Dashboard.Sdk.win-x64" Version="13.2.2" />
-	  
-	<!-- Linux bases packages for CI--> 
-	<PackageReference Include="Aspire.Hosting.Orchestration.linux-x64" Version="13.2.2" />
-	<PackageReference Include="Aspire.Dashboard.Sdk.linux-x64" Version="13.2.2" />
-	  
+  <ItemGroup Condition="'$(OS)' != 'Windows_NT'">
+	  <!-- Linux bases packages for CI-->
+	  <PackageReference Include="Aspire.Hosting.Orchestration.linux-x64" Version="13.2.2" />
+	  <PackageReference Include="Aspire.Dashboard.Sdk.linux-x64" Version="13.2.2" />
+  </ItemGroup>
+
+  <ItemGroup>	
     <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="13.2.2" />
 	<PackageReference Include="Aspire.Hosting" Version="13.2.2" />
 	<PackageReference Include="Aspire.Hosting.Redis" Version="13.2.2" />
