@@ -1,15 +1,17 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Builder;
 using ParcelService.Facade.Commands;
 using ParcelService.Infrastructure;
+using ParcelService.Infrastructure.Messages;
+using ParcelService.Infrastructure.Repositories;
+using ParcelService.UseCase.Commands;
+using ParcelService.UseCase.InfrastructureInterfaces.Ports;
+using ParcelService.UseCase.InfrastructureInterfaces.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using ParcelService.UseCase.Commands;
-using ParcelService.Infrastructure.Repositories;
-using ParcelService.UseCase.InfrastructureInterfaces;
 
 namespace ParcelService.InversionOfControl
 {
@@ -22,6 +24,7 @@ namespace ParcelService.InversionOfControl
             services.AddScoped<ICreateParcelCommand, CreateParcelCommand>();
 
             services.AddScoped<IParcelRepository, ParcelRepository>();
+            services.AddScoped<INewParcelPublisher, DaprPubSub>();
 
             return services;
         }
@@ -41,7 +44,6 @@ namespace ParcelService.InversionOfControl
 
         public static WebApplication SetupDatabaseOnColdStart(this WebApplication app)
         {
-
             using (var scope = app.Services.CreateScope())
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<EFAppContext>();

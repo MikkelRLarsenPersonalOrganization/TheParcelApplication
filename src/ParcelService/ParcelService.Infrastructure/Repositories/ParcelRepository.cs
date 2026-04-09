@@ -1,6 +1,6 @@
 ﻿using ParcelService.Domain.Entities;
 using ParcelService.Infrastructure.DatabaseErrors;
-using ParcelService.UseCase.InfrastructureInterfaces;
+using ParcelService.UseCase.InfrastructureInterfaces.Repositories;
 using Shared.ResultPattern;
 using System;
 using System.Collections.Generic;

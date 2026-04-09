@@ -1,4 +1,6 @@
+using CommunityToolkit.Aspire.Hosting.Dapr;
 using System;
+using System.Collections.Immutable;
 
 
 namespace Aspire.AppHost
@@ -9,17 +11,69 @@ namespace Aspire.AppHost
         {
             var builder = DistributedApplication.CreateBuilder(args);
 
-            var postgres = builder.AddPostgres("postgres")
+            var daprResources = ImmutableHashSet.Create("../Docs/DaprComponents");
+
+            // Name postgres-db is the same as the headless postgres service set in kubernetes deployment manifest
+            var postgres = builder.AddPostgres("postgres-db")
                 .WithLifetime(ContainerLifetime.Persistent)
                 .WithPgAdmin();
 
-            var parcelDb = postgres.AddDatabase("parceldb");
+            // Name redis-db is the same as the headless redis service set in kubernetes deployment manifest
+            var redis = builder.AddRedis("redis-db")
+                .WithLifetime(ContainerLifetime.Session)
+                .WithHttpEndpoint(6379, isProxied: false)
+                .WithRedisInsight();
 
-            var parcelService = builder.AddProject<Projects.ParcelService_Api>("parcelService")
-                .WithReference(parcelDb)
-                .WaitFor(parcelDb);
+            ServiceBuildingBlocks buildingBlock = new ServiceBuildingBlocks(
+                postgres: postgres,
+                daprResources: daprResources,
+                redis: redis);
+
+            builder.ParcelService(buildingBlock);
+
+            // Add Dapr Dashboard
+            builder.AddExecutable(
+                "dapr-dashboard",   
+                "dapr",            
+                ".",                
+                "dashboard",        
+                "-p", "9060"        
+            );
+
 
             builder.Build().Run();
         }
+    }
+
+    public static class SetupServices
+    {
+        public static void ParcelService(this IDistributedApplicationBuilder builder, ServiceBuildingBlocks block)
+        {
+            var parcelDb = block.postgres.AddDatabase("parceldb");
+
+            var parcelService = builder.AddProject<Projects.ParcelService_Api>("parcelService")
+                .WithReference(parcelDb)
+                .WithDaprSidecar(new DaprSidecarOptions
+                {
+                    AppId = "parcelservice",
+                    DaprHttpPort = 8081,
+                    ResourcesPaths = block.daprResources
+                })
+                .WaitFor(parcelDb);
+        }
+    }
+
+    public record ServiceBuildingBlocks
+    {
+        public ServiceBuildingBlocks(IResourceBuilder<PostgresServerResource> postgres, IResourceBuilder<RedisResource> redis, ImmutableHashSet<string> daprResources)
+        {
+            this.postgres = postgres;
+            this.redis = redis;
+            this.daprResources = daprResources;
+        }
+
+        public IResourceBuilder<PostgresServerResource> postgres { get; init; }
+        public IResourceBuilder<RedisResource> redis { get; init; }
+        public ImmutableHashSet<string> daprResources { get; init; }
     }
 }
