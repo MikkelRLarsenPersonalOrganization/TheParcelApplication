@@ -11,7 +11,7 @@ namespace Aspire.AppHost
         {
             var builder = DistributedApplication.CreateBuilder(args);
 
-            var daprResources = ImmutableHashSet.Create("../Docs/DaprComponents");
+            var daprResources = ImmutableHashSet.Create("../Docs/AspireDaprComponents");
 
             // Name postgres-db is the same as the headless postgres service set in kubernetes deployment manifest
             var postgres = builder.AddPostgres("postgres-db")
