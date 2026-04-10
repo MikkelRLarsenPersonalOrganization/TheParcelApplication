@@ -29,7 +29,7 @@ on:
         default: "mikkelrlarsen"     
 
 jobs:
-  Staging:
+  Production:
     runs-on: ubuntu-latest
     environment: Production
 
