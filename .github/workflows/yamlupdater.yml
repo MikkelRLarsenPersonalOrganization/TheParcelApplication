@@ -20,8 +20,7 @@ jobs:
         mode: IMAGE_TAG
         container-name: redis
         new-image-tag: 5
-        dir: Docs/KubernetesDocuments/Deployments
-        files: RedisDeployment.yml
+        files: Docs/KubernetesDocuments/Deployments/RedisDeployment.yml
     
     - name: Commit changes
       uses: EndBug/add-and-commit@v9
